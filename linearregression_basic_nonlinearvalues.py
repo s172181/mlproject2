@@ -30,8 +30,8 @@ attributeNames = np.insert(attributeNames, 0, [u'Offset'], axis=0)
 M = M+1   
 
 # Additional nonlinear attributes, t_out and rh_out squared
-t_out_idx = 21
-rh_out_idx = 23
+t_out_idx = np.where(attributeNames == "T_out")
+rh_out_idx = np.where(attributeNames == "RH_out")
 Xfa2 = np.power(X[:,t_out_idx],2).reshape(-1,1)
 Xva2 = np.power(X[:,rh_out_idx],2).reshape(-1,1)
 Xfava = (X[:,t_out_idx]*X[:,rh_out_idx]).reshape(-1,1)
@@ -55,6 +55,18 @@ figure(1)
 subplot(2,1,2)
 hist(residual,40)
 xlabel('Residual');
+
+subplot(4,3,10)
+plot(Xfa2, residual, '.r')
+xlabel('Tout ^2'); ylabel('Residual')
+
+subplot(4,3,11)
+plot(Xva2, residual, '.r')
+xlabel('RHout ^2'); ylabel('Residual')
+
+subplot(4,3,12)
+plot(Xfava, residual, '.r')
+xlabel('Tout*RHout'); ylabel('Residual')
 
 show()
    
