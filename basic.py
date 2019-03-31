@@ -30,12 +30,16 @@ df = pd.read_csv(filename)
 raw_data = df.get_values() 
 
 #columns: from Appliances until Tdewpoint
-cols = range(1, 26) 
+cols = range(2, 26) 
 X = raw_data[:, cols]
+y = raw_data[:, 1]
 N, M = X.shape
 #Get the attributes names
 attributeNames = np.asarray(df.columns[cols])
 
+####
+#Normalization
+####
 #Standardize
 X = np.array(X, dtype=np.float)
 Xmeans = X - np.ones((N,1))*X.mean(axis=0)
