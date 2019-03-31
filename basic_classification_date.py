@@ -29,7 +29,7 @@ df = pd.read_csv(filename)
 # Pandas returns a dataframe, (df) which could be used for handling the data.
 raw_data = df.get_values() 
 #columns: from Lights until Tdewpoint
-cols = range(2, 26) 
+cols = range(1, 26) 
 X = raw_data[:, cols]
 appl = raw_data[:, 1]
 appl = np.array(appl, dtype=np.float)
@@ -54,19 +54,3 @@ N, M = X.shape
 #Get the attributes names
 attributeNames = np.asarray(df.columns[cols])
 
-####
-#Normalization
-####
-#Standardize
-X = np.array(X, dtype=np.float)
-X = X - np.ones((N,1))*X.mean(axis=0)
-#normalize each attribute by further dividing each attribute by its standard deviation
-for c in range(M):
-   stdv = X[:,c].std()
-   for r in range(N):
-       X[r,c] = X[r,c]/stdv
-       
-#normalize each attribute 
-for c in range(M):
-   X[:,c] = normalize(X[:,c])
-   
