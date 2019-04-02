@@ -36,6 +36,8 @@ K = 10
 CV = model_selection.KFold(n_splits=K,shuffle=True)
 
 # Initialize variables
+RMSE_Error_train = np.empty((K,1))
+RMSE_Error_test = np.empty((K,1))
 Error_train = np.empty((K,1))
 Error_test = np.empty((K,1))
 Error_train_nofeatures = np.empty((K,1))
@@ -58,14 +60,20 @@ for train_index, test_index in CV.split(X):
     # Compute squared error with all features selected (no feature selection)
     # Mean squared error against the prediction
     m = lm.LinearRegression(fit_intercept=True).fit(X_train, y_train)
-    Error_train[k] = np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0]
-    Error_test[k] = np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0]
+    Error_train[k] = np.sqrt(np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0])
+    Error_test[k] = np.sqrt(np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0])
+    
+    RMSE_Error_train[k] = np.sqrt(np.square(y_train-m.predict(X_train)).sum()/y_train.shape[0])
+    RMSE_Error_test[k] = np.sqrt(np.square(y_test-m.predict(X_test)).sum()/y_test.shape[0])
     
     print('Cross validation fold {0}/{1}'.format(k+1,K))
     print('Train indices: {0}'.format(train_index))
     print('Test indices: {0}'.format(test_index))
-    print('- Training error: {0}'.format(Error_train[k]))
-    print('- Test error:     {0}'.format(Error_test[k]))
+    print('- Mean squared Training error: {0}'.format(Error_train[k]))
+    print('- Mean squared Test error:     {0}'.format(Error_test[k]))
+    print('- RMSE training error: {0}'.format(RMSE_Error_train[k]))
+    print('- RMSE test error:     {0}'.format(RMSE_Error_test[k]))
+
 
     k+=1
     
@@ -74,6 +82,8 @@ print('\n')
 print('Linear regression without feature selection:\n')
 print('- Training error: {0}'.format(Error_train.mean()))
 print('- Test error:     {0}'.format(Error_test.mean()))
+print('- RMSE Training error: {0}'.format(RMSE_Error_train.mean()))
+print('- RMSE Test error:     {0}'.format(RMSE_Error_test.mean()))
 print('- R^2 train:     {0}'.format((Error_train_nofeatures.sum()-Error_train.sum())/Error_train_nofeatures.sum()))
 print('- R^2 test:     {0}'.format((Error_test_nofeatures.sum()-Error_test.sum())/Error_test_nofeatures.sum()))
 
