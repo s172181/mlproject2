@@ -17,6 +17,7 @@ from sklearn import model_selection
 from sklearn.model_selection import train_test_split
 from toolbox_02450 import rlr_validate
 import sklearn.linear_model as lm
+from sklearn import metrics
 
 from basic import *
 
@@ -47,6 +48,10 @@ figure(1)
 subplot(2,1,2)
 hist(residual,40)
 xlabel('Residual');
+
+#Mean squared error
+print("Mean squared error")
+print(metrics.mean_squared_error(y,y_est))
 
 show()
    
