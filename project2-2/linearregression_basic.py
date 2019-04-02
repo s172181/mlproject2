@@ -52,6 +52,8 @@ xlabel('Residual');
 #Mean squared error
 print("Mean squared error")
 print(metrics.mean_squared_error(y,y_est))
+#Which is the same as
+print( np.square(y-y_est).sum()/len(y))
 
 show()
    
