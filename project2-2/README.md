@@ -11,6 +11,7 @@ Index of files:
 6. linearregression_crossvalidation.py: applies 10-fold cross-validation to the problem of fitting a linear regression model and outputs the mean squared error
 7. For Part a, question 2: linearregression_crossvalidation_lambda.py: this include the lambdas (it follows exactly the exercise 8_1_1, I just added comments and the RMSE, as well as printing the optimal lambda for every iteration). Feel free to tune in the lambdas, I honestly didn't find much different between regularizing or not, because it choose as optimal lambda 1.
 8. For Part a, question 2: linearregression_featureselector.py: this does the feature selection (it takes a while), but honestly the test error doesnt seem to improve. However, it does seem that the NSM attribute is always chosen.
+9. neural_network_regression.py: I just did it based on the script 8_2_6, and change the outer fold k to 10 like it is stated in the project
 
 Things to notice:
 
@@ -18,3 +19,4 @@ Things to notice:
 2. np.square(y_true-y_est).sum()/len(y_true) is the mean squared error
 3. In linearegresion scripts: RMSE is the Root Mean Square Error. In the report "Data driven prediction models of energy use of appliances in a
 low-energy house" they use this instead, and looking at the results, is the same as ours in the case of "linearregression_basic"
+4. For neural networks: exercise 8, there are libraries that need to be installed
