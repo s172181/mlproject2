@@ -50,10 +50,14 @@ hist(residual,40)
 xlabel('Residual');
 
 #Mean squared error
-print("Mean squared error")
+print (np.sqrt(np.square(y-y_est).sum()/len(y)))
+
 print(metrics.mean_squared_error(y,y_est))
 #Which is the same as
 print( np.square(y-y_est).sum()/len(y))
+
+print ("RMSE")
+print (np.sqrt(np.square(y-y_est).sum()/len(y)))
 
 show()
    
