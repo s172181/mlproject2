@@ -21,10 +21,6 @@ import sklearn.linear_model as lm
 
 from basic import *
 
-####################
-#Linear regression
-###################   
-
 # Add offset attribute
 X = np.concatenate((np.ones((X.shape[0],1)),X),1)
 attributeNames = np.insert(attributeNames, 0, [u'Offset'], axis=0)
@@ -37,7 +33,7 @@ CV = model_selection.KFold(n_splits=K,shuffle=True)
 
 # Values of lambda
 #from 0.00001 to 100000000
-lambdas = np.power(10.,range(-100,100))
+lambdas = np.power(10.,range(-10,10))
 
 # Initialize variables
 RMSE_Error_train_rlr = np.empty((K,1))
@@ -65,37 +61,27 @@ for train_index, test_index in CV.split(X):
     
     # Compute mean squared error without using the input data at all
     #Mean squared error
+    #Baseline
     Error_train_nofeatures[k] = np.square(y_train-y_train.mean()).sum(axis=0)/y_train.shape[0]
     Error_test_nofeatures[k] = np.square(y_test-y_test.mean()).sum(axis=0)/y_test.shape[0]
     
     #Validate regularized linear regression model using k-fold cross validation.
-    # and finds the optimal lambda (minimizing validation error) from 'lambdas' list.
-    # The loss function computed as mean squared error on validation set (MSE).
-    # Function returns: MSE averaged over 'cvf' folds, optimal value of lambda,
-    # average weight values for all lambdas, MSE train&validation errors for all lambdas.
-    # The cross validation splits are standardized based on the mean and standard
-    # deviation of the training set when estimating the regularization strength.
-    #Returns:
-    # opt_val_err         validation error for optimum lambda
-    # opt_lambda          value of optimal lambda
-    # mean_w_vs_lambda    weights as function of lambda (matrix)
-    # train_err_vs_lambda train error as function of lambda (vector)
-    # test_err_vs_lambda  test error as function of lambda (vector)
     opt_val_err, opt_lambda, mean_w_vs_lambda, train_err_vs_lambda, test_err_vs_lambda = rlr_validate(X_train, y_train, lambdas, internal_cross_validation)
     
     # Standardize outer fold based on training set, and save the mean and standard
     # deviations since they're part of the model (they would be needed for
     # making new predictions) - for brevity we won't always store these in the scripts
-    mu[k, :] = np.mean(X_train[:, 1:], 0)
-    sigma[k, :] = np.std(X_train[:, 1:], 0)
-    
-    X_train[:, 1:] = (X_train[:, 1:] - mu[k, :] ) / sigma[k, :] 
-    X_test[:, 1:] = (X_test[:, 1:] - mu[k, :] ) / sigma[k, :] 
+#    mu[k, :] = np.mean(X_train[:, 1:], 0)
+#    sigma[k, :] = np.std(X_train[:, 1:], 0)
+#    
+#    X_train[:, 1:] = (X_train[:, 1:] - mu[k, :] ) / sigma[k, :] 
+#    X_test[:, 1:] = (X_test[:, 1:] - mu[k, :] ) / sigma[k, :] 
     
     Xty = X_train.T @ y_train
     XtX = X_train.T @ X_train    
     
     # Estimate weights for the optimal value of lambda, on entire training set
+    #eye: Return a 2-D array with ones on the diagonal and zeros elsewhere
     lambdaI = opt_lambda * np.eye(M)
     lambdaI[0,0] = 0 # Do no regularize the bias term
     #This solve the ecuation with XtX and the lambdas
@@ -105,7 +91,7 @@ for train_index, test_index in CV.split(X):
     w_noreg[:,k] = np.linalg.solve(XtX,Xty).squeeze()
     
     # Compute mean squared error with regularization with optimal lambda
-    Error_train_rlr[k] = np.square(y_train-X_train @ w_rlr[:,k]).sum(axis=0)/y_train.shape[0]
+    Error_train_rlr[k] = np.square(y_train-X_train @ w_rlr[:,k]).sum(axis=0)/y_train.shape[0]   
     Error_test_rlr[k] = np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0]
     RMSE_Error_train_rlr[k] = np.sqrt(np.square(y_train-X_train @ w_rlr[:,k]).sum(axis=0)/y_train.shape[0])
     RMSE_Error_test_rlr[k] = np.sqrt(np.square(y_test-X_test @ w_rlr[:,k]).sum(axis=0)/y_test.shape[0])
@@ -150,6 +136,10 @@ for train_index, test_index in CV.split(X):
 
     k+=1
     
+#opt_lambda
+#print (w_rlr[:,9])
+#print(.sum(axis=0))
+    
 show()
 # Display results
 print('Linear regression without feature selection:')
@@ -165,4 +155,11 @@ print('- R^2 test:     {0}\n'.format((Error_test_nofeatures.sum()-Error_test_rlr
 print('- RMSE train:     {0}'.format(RMSE_Error_train_rlr.mean()))
 print('- RMSE test:     {0}\n'.format(RMSE_Error_test_rlr.mean()))
 
+print('Weights in last fold:')
+for m in range(M):
+    print('{:>15} {:>15}'.format(attributeNames[m], np.round(w_rlr[m,-1],2)))
+
+print('Not regularized weights last fold:')
+for m in range(M):
+    print('{:>15} {:>15}'.format(attributeNames[m], np.round(w_noreg[m,-1],2)))
 
