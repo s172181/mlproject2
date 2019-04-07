@@ -125,6 +125,8 @@ for train_index, test_index in CV.split(X):
     print('Cross validation fold {0}/{1}'.format(k+1,K))
     print('Train indices: {0}'.format(train_index))
     print('Test indices: {0}'.format(test_index))
+    print('- Training baseline: {0}'.format(Error_train_nofeatures[k]))
+    print('- Test error baseline:     {0}'.format(Error_test_nofeatures[k]))
     print('- Training error with regularization: {0}'.format(Error_train_rlr[k]))
     print('- Test error with regularization:     {0}'.format(Error_test_rlr[k]))
     print('- RMSE training error with regularization: {0}'.format(RMSE_Error_train_rlr[k]))
