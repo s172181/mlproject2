@@ -97,7 +97,7 @@ for (k, (train_index, test_index)) in enumerate(CV.split(X,y)):
     model2 = lambda: torch.nn.Sequential(
                     torch.nn.Linear(M, hiddenUnits[h]), #M features to n_hidden_units
                     torch.nn.Tanh(),   # 1st transfer function,
-                    torch.nn.Linear(n_hidden_units, 1), # n_hidden_units to 1 output neuron
+                    torch.nn.Linear(hiddenUnits[h], 1), # n_hidden_units to 1 output neuron
                     # no final tranfer function, i.e. "linear output"
                     )
     loss_fn2 = torch.nn.MSELoss() # notice how this is now a mean-squared-error loss
