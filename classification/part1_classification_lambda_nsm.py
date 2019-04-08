@@ -31,6 +31,7 @@ CV = model_selection.KFold(K, shuffle=True)
 
 train_error_rate_f = np.zeros(K)
 test_error_rate_f = np.zeros(K)
+test_base_rate_f = np.zeros(K)
 coefficient_norm_f = np.zeros(K)
 for (k, (train_index, test_index)) in enumerate(CV.split(X,y)): 
     
@@ -39,6 +40,9 @@ for (k, (train_index, test_index)) in enumerate(CV.split(X,y)):
     y_train = y[train_index]
     X_test = X[test_index,:]
     y_test = y[test_index]
+    
+    #Baseline
+    y_baseline = np.zeros(len(y_test));
     
     K2 = 5
     CV2 = model_selection.KFold(K2, shuffle=True)
@@ -88,11 +92,13 @@ for (k, (train_index, test_index)) in enumerate(CV.split(X,y)):
     y_test_est_f = mdl.predict(X_test).T
     
     test_error_rate_f[k] = np.sum(y_test_est_f != y_test) / len(y_test)
+    test_base_rate_f[k] = np.sum(y_baseline != y_test) / len(y_test)
     
     print("External cross")
     
     print("Fold",k)
     print("Lambda",super_lambda)
+    print("Baseline error ",test_base_rate_f[k])
     print("Test error rate ",test_error_rate_f[k])
     
     
